@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">MyBike Configurator</string>
+    <string name="enable_ble">Bluetooth enabled</string>
+    <string name="text_mode_radio_group">Select your power needs</string>
+    <string name="radio_mode_1">I am Superman, don\'t need much help</string>
+    <string name="radio_mode_2">Help me a little bit</string>
+    <string name="radio_mode_3">good for riding around</string>
+    <string name="radio_mode_4">give me all the fun</string>
+    <string name="text_bike_spinner">Configure your bike:</string>
+    <string name="spinner_bike_select_default">select your bike</string>
+
+    <string name="error_bluetooth_not_supported">Error: BLE not supported</string>
+    <string name="ble_not_supported">Bluetooth is not supported</string>
+    <string name="permission_ble_not_given">Please enable app permission BLE in application manager</string>
+    <string name="toast_selected_item">you selected:</string>
+
+    <string name="device_unknown_device">Unknown Device</string>
+    <string name="button_reload_config">reload from bike</string>
+
+    <string name="title_devices">BLE Device Scan</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="no_data">No data</string>
+    <string name="label_data">Data:</string>
+    <string name="label_device_address">Device address:</string>
+    <string name="label_state">State:</string>
+
+    <string name="unknown_device">Unknown device</string>
+    <string name="unknown_characteristic">Unknown characteristic</string>
+    <string name="unknown_service">Unknown service</string>
+
+    <!-- Menu items -->
+    <string name="menu_connect">Connect</string>
+    <string name="menu_disconnect">Disconnect</string>
+    <string name="menu_scan">Scan</string>
+    <string name="menu_stop">Stop</string>
+</resources>
