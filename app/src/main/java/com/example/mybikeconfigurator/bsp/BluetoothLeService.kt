@@ -271,12 +271,13 @@ class BluetoothLeService : Service() {
 
 
     fun writeCharacteristics(characteristic: BluetoothGattCharacteristic, value: ByteArray, writeType: Int =  BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT) {
-        Log.d(TAG, "writeCharacteristic()")
+        Log.d(TAG, "writeCharacteristic() to ${characteristic.uuid}")
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized")
             return
         }
         characteristic.value = value
+        characteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
         mBluetoothGatt!!.writeCharacteristic(characteristic)
     }
 

@@ -27,7 +27,9 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import com.example.mybikeconfigurator.R
+import java.nio.charset.Charset
 import java.util.*
 
 
@@ -55,6 +57,7 @@ class DeviceControlActivity : AppCompatActivity() {
     private val LIST_UUID = "UUID"
 
 
+    private var mBike: Bike = Bike()
     private var mLight = false
 
     // Code to manage Service lifecycle.
@@ -97,12 +100,13 @@ class DeviceControlActivity : AppCompatActivity() {
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED == action) {
                 // Show all the supported services and characteristics on the user interface.
                 displayGattServices(mBluetoothLeService!!.supportedGattServices)
+                readCurrentSettings()
+
                 var characteristic: BluetoothGattCharacteristic? = getCharacteristicForUUID(SampleGattAttributes.PAS_MODE_CHARACTERISTIC_READ)
                 if (characteristic != null) {
                     mBluetoothLeService!!.setCharacteristicNotification(characteristic,true)
                     mBluetoothLeService!!.readCharacteristic(characteristic)
                 }
-                readCurrentSettings()
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE == action) {
                 var dataString = intent.getStringExtra(BluetoothLeService.EXTRA_DATA)
                 var dataBytes: ByteArray? = intent.getByteArrayExtra(BluetoothLeService.EXTRA_BYTES)
@@ -205,36 +209,80 @@ class DeviceControlActivity : AppCompatActivity() {
         var radio_mode_group: RadioGroup = findViewById(R.id.radio_mode_group)
         radio_mode_group.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { group, checkedId ->
             val radio: RadioButton = findViewById(checkedId)
-            Toast.makeText(applicationContext," On checked change :"+
-                    " ${radio.text}",
-                Toast.LENGTH_SHORT).show()
-            var bikeMode = 1
+            // Toast.makeText(applicationContext," On checked change :"+
+            //         " ${radio.text}",
+            //     Toast.LENGTH_SHORT).show()
             when(radio.id) {
-                R.id.radio_mode_2 -> bikeMode = 2
-                R.id.radio_mode_3 -> bikeMode = 3
-                R.id.radio_mode_4 -> bikeMode = 4
-                else ->bikeMode = 1
+                R.id.radio_mode_2 -> mBike.mode = 2
+                R.id.radio_mode_3 -> mBike.mode = 3
+                R.id.radio_mode_4 -> mBike.mode = 4
+                else -> mBike.mode = 1
             }
-            setBikeMode(bikeMode)
+            setBike()
+        })
+        var radio_pas_group: RadioGroup = findViewById(R.id.radio_pas_group)
+        radio_pas_group.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { group, checkedId ->
+            val radio: RadioButton = findViewById(checkedId)
+            // Toast.makeText(applicationContext," On checked change :"+
+            //        " ${radio.text}",
+            //    Toast.LENGTH_SHORT).show()
+            when(radio.id) {
+                R.id.radio_pas_0 -> mBike.PAS = 0
+                R.id.radio_pas_2 -> mBike.PAS = 2
+                R.id.radio_pas_3 -> mBike.PAS = 3
+                R.id.radio_pas_4 -> mBike.PAS = 4
+                else -> mBike.PAS = 1
+            }
+            setBike()
         })
 
         var reloadButton: Button = findViewById(R.id.reload_button)
         reloadButton.setOnClickListener {
             readCurrentSettings()
         }
+
+        var lightSwitch: SwitchCompat = findViewById((R.id.switch_light))
+        lightSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            mBike.light = isChecked
+            setBike()
+        }
     }
 
-    fun setBikeMode(mode: Int) {
+    fun String.decodeHex(): ByteArray {
+        check(length % 2 == 0) { "Must have an even length" }
+
+        return chunked(2)
+            .map { it.toInt(16).toByte() }
+            .toByteArray()
+    }
+
+    private fun setBike() {
+        // get Characteristics
+        Log.d(TAG, "try to set light ${mBike.light}")
+        if (mBluetoothLeService != null) {
+            //var data: ByteArray = hexStringToByteArray("00D10"+ if(mBike.light) {1} else {0} + "0" + mBike.PAS + "0" + (mBike.mode+3) +"0000000000")
+            var dataString = "00D10"+ if(mBike.light) {1} else {0} + "0" + mBike.PAS + "0" + (mBike.mode+3) +"0000000000"
+            var data: ByteArray = dataString.decodeHex()
+            var characteristic = getCharacteristicForUUID(SampleGattAttributes.PAS_MODE_CHARACTERISTIC_WRITE)
+            if (characteristic != null) {
+                Log.d(TAG,"sending: $data from $dataString")
+                mBluetoothLeService!!.writeCharacteristics(characteristic, data)
+            }
+        }
+    }
+
+/*    fun setBikeMode(mode: Int) {
         // get Characteristics
         Log.d(TAG, "try to set mode ${mode}")
         if (mBluetoothLeService != null) {
-            var data: ByteArray = hexStringToByteArray("00d1000" + mode + "040000000000")
+            var data: ByteArray = hexStringToByteArray("00D1000" + mode + "040000000000")
             var characteristic = getCharacteristicForUUID(SampleGattAttributes.PAS_MODE_CHARACTERISTIC_WRITE)
             if (characteristic != null) {
                 mBluetoothLeService!!.writeCharacteristics(characteristic, data)
             }
         }
     }
+ */
 
     private fun hexVal(ch: Char): Int {
         return ch.digitToIntOrNull(16) ?: -1
@@ -334,13 +382,16 @@ class DeviceControlActivity : AppCompatActivity() {
             var dataList = data.split("\n")
             var uuid: String = dataList[0]
             // var bytes: ByteArray = (dataList[1].toByteArray(Charsets.UTF_8))
-            var string: String = dataList[2]
+            var dataString: String = dataList[2]
             //mDataField!!.text = data
-            Log.d(TAG, "received data for uuid ${uuid} String: ${string} Bytes: ${bytes} ByteArray Length: ${bytes?.size}")
+            Log.d(TAG, "received data for uuid ${uuid} String: ${dataString} Bytes: ${bytes}} ByteArray Length: ${bytes?.size}")
             //System.out.println(data);
             when(uuid){
                 SampleGattAttributes.PAS_MODE_CHARACTERISTIC_READ -> {
                     Log.d(TAG,"received notificationRoute")
+                    if(dataString.startsWith("03 00")){
+                        Log.d(TAG, "\tBike Config Received: $dataString")
+                    }
                     // Mode 3: 03 00 03 00 01 04 00 00 00 00
                     // Mode 1: 03 00 01 00 01 04 00 00 00 00
                     // Mode 0: 03 00 00 00 01 04 00 00 00 00
@@ -355,6 +406,9 @@ class DeviceControlActivity : AppCompatActivity() {
                     //         04 01 F4 C5 00 00 00 00 00 00
                     //         04 01 F3 C5 00 00 00 00 00 00
                     //         04 01 F2 C5 00 00 00 00 00 00
+                }
+                SampleGattAttributes.PAS_MODE_CHARACTERISTIC_WRITE -> {
+                    Log.d(TAG, "received PAS_MODE_CHARACTERISTIC_WRITE")
                 }
                 else -> {
                     Log.d(TAG, "received unrecognized value")

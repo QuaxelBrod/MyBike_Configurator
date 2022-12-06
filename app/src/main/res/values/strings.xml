@@ -1,11 +1,22 @@
 <resources>
     <string name="app_name">MyBike Configurator</string>
     <string name="enable_ble">Bluetooth enabled</string>
-    <string name="text_mode_radio_group">Select your power needs</string>
+
+    <string name="text_mode_radio_group">Select your power needs (aka Mode)</string>
     <string name="radio_mode_1">I am Superman, don\'t need much help</string>
     <string name="radio_mode_2">Help me a little bit</string>
     <string name="radio_mode_3">good for riding around</string>
     <string name="radio_mode_4">give me all the fun</string>
+    @string/radio_pas_
+    <string name="radio_pas_text">Select your support needs (PAS)</string>
+    <string name="radio_pas_0">Nothing. Plain pain!</string>
+    <string name="radio_pas_1">No sweat no fun</string>
+    <string name="radio_pas_2">Save you battery</string>
+    <string name="radio_pas_3">Impress your children</string>
+    <string name="radio_pas_4">Easy peasy</string>
+
+    <string name="button_reload_config">reload from bike (TBD)</string>
+
     <string name="text_bike_spinner">Configure your bike:</string>
     <string name="spinner_bike_select_default">select your bike</string>
 
@@ -15,7 +26,6 @@
     <string name="toast_selected_item">you selected:</string>
 
     <string name="device_unknown_device">Unknown Device</string>
-    <string name="button_reload_config">reload from bike</string>
 
     <string name="title_devices">BLE Device Scan</string>
     <string name="connected">Connected</string>

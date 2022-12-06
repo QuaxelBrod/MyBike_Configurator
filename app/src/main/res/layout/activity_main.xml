@@ -24,12 +24,22 @@
             android:layout_height="wrap_content"
             android:text="@string/text_bike_spinner" />
 
-        <Switch
-            android:id="@+id/switch1"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_light"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
             android:text="Light" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
 
         <TextView
             android:id="@+id/text_mode_radio_group"
@@ -71,6 +81,62 @@
                 android:text="@string/radio_mode_4" />
 
         </RadioGroup>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="And your PAS:" />
+
+        <RadioGroup
+            android:id="@+id/radio_pas_group"
+            android:layout_width="match_parent"
+            android:layout_height="243dp">
+
+            <RadioButton
+                android:id="@+id/radio_pas_0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/radio_pas_0" />
+
+            <RadioButton
+                android:id="@+id/radio_pas_1"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="@string/radio_pas_1" />
+
+            <RadioButton
+                android:id="@+id/radio_pas_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/radio_pas_2" />
+
+            <RadioButton
+                android:id="@+id/radio_pas_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/radio_pas_3" />
+
+            <RadioButton
+                android:id="@+id/radio_pas_4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/radio_pas_4" />
+        </RadioGroup>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
 
         <Button
             android:id="@+id/reload_button"
